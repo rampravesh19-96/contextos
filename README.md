@@ -11,6 +11,38 @@ ContextOS is a multi-tenant AI knowledge workspace. It supports session-authenti
 - Email: `demo@contextos.dev`
 - Password: `DemoPass123!`
 
+## Product screenshots
+
+### Grounded RAG chat
+
+Ask questions against an authorized knowledge base and review the returned source citations.
+
+![ContextOS grounded RAG chat](docs/screenshots/contextos-rag-chat.png)
+
+### Workspace overview
+
+Workspace-scoped counts provide a concise view of the current knowledge workspace.
+
+![ContextOS dashboard](docs/screenshots/contextos-dashboard.png)
+
+### Documents
+
+Upload and track PDF, TXT, and Markdown ingestion status within a knowledge base.
+
+![ContextOS documents](docs/screenshots/contextos-documents.png)
+
+### Knowledge bases
+
+Organize documents into tenant-scoped knowledge bases.
+
+![ContextOS knowledge bases](docs/screenshots/contextos-knowledge-bases.png)
+
+### Analytics
+
+Review workspace-scoped AI usage events and available usage totals.
+
+![ContextOS analytics](docs/screenshots/contextos-analytics.png)
+
 ## Stack
 
 - pnpm workspaces and Turborepo
