@@ -10,6 +10,7 @@ type Message = {
   citations?: Array<{ documentName: string; chunkId: string; excerpt: string }>;
 };
 type Conversation = { id: string; title?: string | null };
+type ConversationDetail = Conversation & { messages: Message[] };
 export default function Page() {
   const { workspaceId } = useWorkspace();
   const [conversation, setConversation] = useState<Conversation | null>(null);
@@ -20,6 +21,22 @@ export default function Page() {
   useEffect(() => {
     setConversation(null);
     setMessages([]);
+    setError('');
+    if (!workspaceId) return;
+    void (async () => {
+      try {
+        const conversations = await api<Conversation[]>(`/workspaces/${workspaceId}/conversations`);
+        const latest = conversations[0];
+        if (!latest) return;
+        const detail = await api<ConversationDetail>(
+          `/workspaces/${workspaceId}/conversations/${latest.id}`,
+        );
+        setConversation(detail);
+        setMessages(detail.messages);
+      } catch (reason) {
+        setError(reason instanceof Error ? reason.message : 'Could not load conversation history.');
+      }
+    })();
   }, [workspaceId]);
   async function start() {
     if (!workspaceId) return;

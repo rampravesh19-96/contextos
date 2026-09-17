@@ -56,6 +56,20 @@ describe('ChatService', () => {
       vectors as any,
     ).stream('w-own', 'kb-own', 'c1', 'u1', 'q', jest.fn());
     expect(vectors.search).toHaveBeenCalledWith('w-own', 'kb-own', [1]);
+    expect(prisma.message.create).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ data: { conversationId: 'c1', role: 'USER', content: 'q' } }),
+    );
+    expect(prisma.message.create).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({
+        data: expect.objectContaining({
+          conversationId: 'c1',
+          role: 'ASSISTANT',
+          content: 'Grounded',
+        }),
+      }),
+    );
     expect(prisma.message.create.mock.calls[1][0].data.citations[0].chunkId).toBe('chunk-own');
     if (original) process.env.LLM_API_KEY = original;
     else delete process.env.LLM_API_KEY;
