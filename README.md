@@ -2,6 +2,15 @@
 
 ContextOS is a multi-tenant AI knowledge workspace. It supports session-authenticated workspaces, tenant-scoped knowledge bases, document ingestion, and grounded chat when an OpenAI-compatible provider is configured.
 
+## Live demo
+
+[Open ContextOS](https://contextos-two.vercel.app)
+
+**Demo login**
+
+- Email: `demo@contextos.dev`
+- Password: `DemoPass123!`
+
 ## Stack
 
 - pnpm workspaces and Turborepo
@@ -34,10 +43,6 @@ The health endpoint is `GET http://localhost:4000/api/health`.
 ## Implemented scope
 
 Documents are limited to PDF, TXT, and Markdown, up to 10 MB. Upload persists a tenant-scoped document, then enqueues extraction and chunking. Redis unavailability results in a visible FAILED status rather than a false success. pgvector SQL is isolated in `VectorRepository`; embeddings and chat require `LLM_API_KEY` outside tests. Chat streams provider tokens and stores citations derived solely from retrieved chunks.
-
-## Demo credentials
-
-After manual migration and seed: `demo@contextos.dev` / `DemoPass123!`.
 
 ## Roadmap
 
