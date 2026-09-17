@@ -1,7 +1,8 @@
 'use client';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { api, API_URL } from '../../../lib/api';
-import { PageFrame } from '../knowledge-bases/page';
+import { PageFrame } from '../../../components/page-frame';
+import { useWorkspace } from '../../../components/workspace-provider';
 type KB = { id: string; name: string };
 type Document = {
   id: string;
@@ -12,7 +13,7 @@ type Document = {
   _count?: { chunks: number };
 };
 export default function Page() {
-  const [workspaceId, setWorkspaceId] = useState<string | null>(null);
+  const { workspaceId } = useWorkspace();
   const [bases, setBases] = useState<KB[]>([]);
   const [knowledgeBaseId, setKnowledgeBaseId] = useState('');
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -32,10 +33,13 @@ export default function Page() {
     }
   }
   useEffect(() => {
-    const id = localStorage.getItem('contextos-workspace');
-    setWorkspaceId(id);
-    if (id) void refresh(id);
-  }, []);
+    if (workspaceId) void refresh(workspaceId);
+    else {
+      setBases([]);
+      setDocuments([]);
+      setKnowledgeBaseId('');
+    }
+  }, [workspaceId]);
   async function upload(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file || !workspaceId || !knowledgeBaseId) return;

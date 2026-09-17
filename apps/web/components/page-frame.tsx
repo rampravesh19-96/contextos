@@ -1,0 +1,19 @@
+import { type ReactNode } from 'react';
+
+export function PageFrame({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  children: ReactNode;
+}) {
+  return (
+    <>
+      <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+      <p className="mt-2 text-slate-600">{description}</p>
+      <div className="mt-8">{children}</div>
+    </>
+  );
+}

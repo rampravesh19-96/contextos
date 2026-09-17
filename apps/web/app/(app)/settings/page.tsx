@@ -1,4 +1,4 @@
-import { PageFrame } from '../knowledge-bases/page';
+import { PageFrame } from '../../../components/page-frame';
 export default function Page() {
   return (
     <PageFrame title="Settings" description="Workspace preferences and membership controls.">

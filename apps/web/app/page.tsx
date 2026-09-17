@@ -6,7 +6,7 @@ export default function LandingPage() {
         <span className="text-lg font-bold tracking-tight">ContextOS</span>
         <Link
           className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white"
-          href="/dashboard"
+          href="/sign-in"
         >
           Open workspace
         </Link>
@@ -25,7 +25,7 @@ export default function LandingPage() {
         <div className="mt-10">
           <Link
             className="rounded-lg bg-indigo-600 px-5 py-3 font-semibold text-white shadow-sm"
-            href="/dashboard"
+            href="/sign-in"
           >
             Explore the workspace
           </Link>

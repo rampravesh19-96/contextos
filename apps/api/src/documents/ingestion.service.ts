@@ -83,21 +83,21 @@ export class IngestionService implements OnModuleInit, OnModuleDestroy {
           metadata: { sourceName: document.name },
         })),
       });
-      if (this.embeddings.isConfigured() || process.env.NODE_ENV === 'test') {
-        const stored = await db.documentChunk.findMany({
-          where: { documentId },
-          orderBy: { ordinal: 'asc' },
-          select: { id: true, content: true },
-        });
-        const vectors = await this.embeddings.embed(
-          stored.map((chunk: { content: string }) => chunk.content),
-        );
-        await Promise.all(
-          stored.map((chunk: { id: string }, index: number) =>
-            this.vectors.saveEmbedding(chunk.id, vectors[index]),
-          ),
-        );
-      }
+      const stored = await db.documentChunk.findMany({
+        where: { documentId },
+        orderBy: { ordinal: 'asc' },
+        select: { id: true, content: true },
+      });
+      const vectors = await this.embeddings.embed(
+        stored.map((chunk: { content: string }) => chunk.content),
+      );
+      if (vectors.length !== stored.length || vectors.some((vector) => !vector.length))
+        throw new Error('Embedding provider returned an incomplete embedding response.');
+      await Promise.all(
+        stored.map((chunk: { id: string }, index: number) =>
+          this.vectors.saveEmbedding(chunk.id, vectors[index]),
+        ),
+      );
       await db.document.update({
         where: { id: documentId },
         data: { status: 'READY', errorMessage: null },

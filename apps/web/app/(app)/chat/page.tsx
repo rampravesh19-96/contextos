@@ -1,7 +1,8 @@
 'use client';
 import { FormEvent, useEffect, useState } from 'react';
 import { api, API_URL } from '../../../lib/api';
-import { PageFrame } from '../knowledge-bases/page';
+import { PageFrame } from '../../../components/page-frame';
+import { useWorkspace } from '../../../components/workspace-provider';
 type Message = {
   id?: string;
   role: string;
@@ -10,16 +11,16 @@ type Message = {
 };
 type Conversation = { id: string; title?: string | null };
 export default function Page() {
-  const [workspaceId, setWorkspaceId] = useState<string | null>(null);
+  const { workspaceId } = useWorkspace();
   const [conversation, setConversation] = useState<Conversation | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [question, setQuestion] = useState('');
   const [error, setError] = useState('');
   const [streaming, setStreaming] = useState(false);
   useEffect(() => {
-    const id = localStorage.getItem('contextos-workspace');
-    setWorkspaceId(id);
-  }, []);
+    setConversation(null);
+    setMessages([]);
+  }, [workspaceId]);
   async function start() {
     if (!workspaceId) return;
     try {
@@ -116,7 +117,7 @@ export default function Page() {
           New conversation
         </button>
         <p className="self-center text-xs text-slate-500">
-          LLM_API_KEY is required; no fallback answers are fabricated.
+          Answers are grounded in documents from the current workspace.
         </p>
       </div>
       {error && (

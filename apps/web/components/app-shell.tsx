@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from './auth-provider';
+import { useWorkspace } from './workspace-provider';
 import { api } from '../lib/api';
 
 const links = [
@@ -12,32 +13,14 @@ const links = [
   ['Documents', '/documents'],
   ['AI Chat', '/chat'],
   ['Analytics', '/analytics'],
-  ['Settings', '/settings'],
 ];
-type Workspace = { id: string; name: string; slug: string; role: string };
-
 export function AppShell({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
+  const { user, refresh } = useAuth();
+  const { workspaces, workspaceId, selectWorkspace } = useWorkspace();
   const router = useRouter();
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  const [workspaceId, setWorkspaceId] = useState('');
-  useEffect(() => {
-    void api<Workspace[]>('/workspaces')
-      .then((items) => {
-        setWorkspaces(items);
-        const saved = localStorage.getItem('contextos-workspace');
-        setWorkspaceId(
-          items.some((item) => item.id === saved) ? (saved ?? '') : (items[0]?.id ?? ''),
-        );
-      })
-      .catch(() => setWorkspaces([]));
-  }, []);
-  function selectWorkspace(id: string) {
-    setWorkspaceId(id);
-    localStorage.setItem('contextos-workspace', id);
-  }
   async function signOut() {
     await api('/auth/sign-out', { method: 'POST' }).catch(() => undefined);
+    await refresh();
     router.replace('/sign-in');
   }
   const active = workspaces.find((item) => item.id === workspaceId);
@@ -50,11 +33,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         <label className="mt-7 block text-xs font-medium text-slate-500">
           Workspace
           <select
-            value={workspaceId}
+            value={workspaceId ?? ''}
             onChange={(event) => selectWorkspace(event.target.value)}
             className="mt-1 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900"
           >
-            {workspaces.length === 0 && <option>Loading workspaces…</option>}
+            {workspaces.length === 0 && <option value="">Loading workspaces…</option>}
             {workspaces.map((workspace) => (
               <option key={workspace.id} value={workspace.id}>
                 {workspace.name} · {workspace.role}

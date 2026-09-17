@@ -2,7 +2,7 @@
 CREATE EXTENSION IF NOT EXISTS vector;
 
 -- Prisma represents this column as Unsupported("vector"); vector operations are isolated in VectorRepository.
-ALTER TABLE "DocumentChunk" ADD COLUMN "embedding" vector;
+ALTER TABLE "DocumentChunk" ADD COLUMN "embedding" vector(1536);
 
 CREATE INDEX IF NOT EXISTS "DocumentChunk_embedding_hnsw_idx"
 ON "DocumentChunk" USING hnsw ("embedding" vector_cosine_ops);

@@ -1,11 +1,13 @@
 'use client';
 
-import { FormEvent, useEffect, useState, type ReactNode } from 'react';
+import { FormEvent, useEffect, useState } from 'react';
 import { api } from '../../../lib/api';
+import { useWorkspace } from '../../../components/workspace-provider';
+import { PageFrame } from '../../../components/page-frame';
 
 type KnowledgeBase = { id: string; name: string; description: string | null; updatedAt: string };
 export default function Page() {
-  const [workspaceId, setWorkspaceId] = useState<string | null>(null);
+  const { workspaceId } = useWorkspace();
   const [items, setItems] = useState<KnowledgeBase[]>([]);
   const [name, setName] = useState('');
   const [error, setError] = useState('');
@@ -18,10 +20,9 @@ export default function Page() {
     }
   }
   useEffect(() => {
-    const id = localStorage.getItem('contextos-workspace');
-    setWorkspaceId(id);
-    if (id) void load(id);
-  }, []);
+    if (workspaceId) void load(workspaceId);
+    else setItems([]);
+  }, [workspaceId]);
   async function create(event: FormEvent) {
     event.preventDefault();
     if (!workspaceId) return;
@@ -104,22 +105,5 @@ export default function Page() {
         </ul>
       )}
     </PageFrame>
-  );
-}
-export function PageFrame({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description: string;
-  children: ReactNode;
-}) {
-  return (
-    <>
-      <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-      <p className="mt-2 text-slate-600">{description}</p>
-      <div className="mt-8">{children}</div>
-    </>
   );
 }

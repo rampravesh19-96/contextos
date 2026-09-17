@@ -1,8 +1,10 @@
 'use client';
 import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '../../components/auth-provider';
 export default function SignInPage() {
   const router = useRouter();
+  const { refresh } = useAuth();
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -24,6 +26,7 @@ export default function SignInPage() {
       setError('Unable to sign in. Check the demo credentials and try again.');
       return;
     }
+    await refresh();
     router.replace('/dashboard');
   }
   return (
